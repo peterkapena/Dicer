@@ -31,7 +31,7 @@ namespace Dicer
         {
             services.AddMvc(options => { options.EnableEndpointRouting = false; });
             
-            services.AddDbContext<DicerContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Dicer")));
+            services.AddDbContext<DicerContext>(options => options.UseSqlServer(new Data(Configuration).CnString));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
