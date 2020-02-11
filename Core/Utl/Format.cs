@@ -283,7 +283,7 @@ namespace Dicer.Core.Utl
                         else
                             return DftValue;
                     }
-                    if (Value.GetType().Name == "String")
+                    if (Value.GetType().Name == "String" || Value.GetType().Name == "JsonElement")
                     {
                         if (Value.ToString().Length == 0)
                             return DftValue;

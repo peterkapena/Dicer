@@ -10,7 +10,7 @@ namespace Dicer.Model.Dicer
     {
         public DicerContext(DbContextOptions<DicerContext> options)
                : base(options)
-        {
+        {            
         }        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

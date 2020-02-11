@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dicer.Core.Utl;
 using Microsoft.AspNetCore.Mvc;
+using Dicer.Model.Dicer;
 
 namespace Dicer.Controllers
 {
@@ -14,7 +15,8 @@ namespace Dicer.Controllers
 
         enum svc
         {
-            SaveFibonacci = 0
+            Play = 0,
+            Register = 1
         }
 
 
@@ -33,51 +35,106 @@ namespace Dicer.Controllers
         {
             try
             {
-                if (LoadParam(data))
-                    return Process(Request.Method, data);
-                else return StatusCode(500);
-
+                ResponseData = new Dictionary<string, object>();
+                Service = Fmt.Var.ToInteger(data["s"]);
+                return Process(data);
             }
             catch (Exception ex)
             {
                 ResponseData.Add("error", ex.Message);
-                return NotFound(ResponseData);
+                return StatusCode(500, ResponseData);
             }
         }
         #endregion
 
-        #region 'Utilities'
-        private bool LoadParam(Dictionary<string, object> data)
+        private ActionResult Process(Dictionary<string, object> data)
         {
-            ResponseData = new Dictionary<string, object>();
-            Service = Fmt.Var.ToInteger(data["s"]);
-            return true;
-        }
 
-
-        private ActionResult Process(string method, Dictionary<string, object> data)
-        {
-            switch (method)
+            switch (Service)
             {
-                case "GET":
-                    return Ok(ResponseData);
+                case (int)svc.Play:
+                    if (Play(data))
+                        return Ok(ResponseData);
+                    else return StatusCode(500, ResponseData);
 
-                case "POST":
-                    //save the data from here
-                    ResponseData.Add("data", data);
-                    return Ok(ResponseData);
-
-                case "PUT":
-                    return Ok(ResponseData);
-
-                case "DELETE":
-                    return Ok(ResponseData);
+                case (int)svc.Register:
+                    if (Register(data))
+                        return Ok(ResponseData);
+                    else return StatusCode(500, ResponseData);
 
                 default:
-                    ResponseData.Add("error", $"{method} method not implemented yet");
                     return Ok(ResponseData);
             }
         }
-        #endregion
+
+        private bool Register(Dictionary<string, object> data)
+        {
+            try
+            {
+                Repository repo = new Repository();
+
+                repo.AddPerson(
+                      new Person
+                      {
+                          PersonID = repo.People.Count.ToString(),
+                          PhoneNumber = Fmt.Var.ToString(data["prsnNmbr"]),
+                          FirstName = Fmt.Var.ToString(data["frstNme"]),
+                          LastName = Fmt.Var.ToString(data["lstNme"]),
+                          IDNumber = Fmt.Var.ToString(data["idNmbr"]),
+                          PassPortNumber = Fmt.Var.ToString(data["pssPrtNmbr"]),
+                          OtherIdentityNumber = Fmt.Var.ToString(data["othrIdNmbr"])
+                      });
+
+                repo.AddDevice(
+                    new Device
+                    {
+                        DeviceID = repo.Devices.Count.ToString(),
+                        mcAddress = Fmt.Var.ToString(data["mcAddrss"]),
+                        deviceTypeName = Fmt.Var.ToString(data["dviceTypeNme"]),
+                        deviceOwnerName = Fmt.Var.ToString(data["dviceOwnrNme"])
+                    }
+                    );
+
+                ajSetReturnValue("data", data);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ajSetReturnValue("error", ex.Message);
+                return false;
+            }
+
+        }
+
+        private bool Play(Dictionary<string, object> data)
+        {
+            try
+            {
+                Repository repo = new Repository();
+                repo.AddGamed(
+                      new Gamed
+                      {
+                          gamedID = repo.gamed.Count.ToString(),
+                          DeviceID = repo.Devices.Count.ToString(),
+                          PersonID = repo.People.Count.ToString()
+                      });
+                ajSetReturnValue("data", data);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ajSetReturnValue("error", ex.Message);
+                return false;
+            }
+        }
+        public virtual void ajSetReturnValue(string key, object value)
+        {
+            if (ResponseData == null)
+                ResponseData = new Dictionary<string, object>();
+            if (ResponseData.ContainsKey(key))
+                ResponseData.Remove(key);
+            ResponseData.Add(key, value);
+        }
+
     }
 }
