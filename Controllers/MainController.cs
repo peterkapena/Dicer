@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Dicer.Core.Utl;
-using Microsoft.AspNetCore.Mvc;
+﻿using Dicer.Core.Utl;
 using Dicer.Model.Dicer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Dicer.Controllers
 {

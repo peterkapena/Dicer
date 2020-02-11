@@ -3,10 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace Dicer.Core.Utl
@@ -19,7 +17,6 @@ namespace Dicer.Core.Utl
         public static TriFormatter Tri = new TriFormatter();
         public static XmlFormatter Xml = new XmlFormatter(); // 0811 rose
         public static VarFormatter Var = new VarFormatter();
-
 
 
         public class VarFormatter
@@ -915,7 +912,6 @@ namespace Dicer.Core.Utl
             }
         }
 
-
         public class Base64Formatter
         {
             public string FromURL(string value)
@@ -972,7 +968,6 @@ namespace Dicer.Core.Utl
                 return sRet;
             }
         }
-
 
         public class StrFormatter
         {
